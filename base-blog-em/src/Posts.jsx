@@ -18,6 +18,16 @@ export function Posts() {
   // replace with useQuery
   console.log(fetchPosts);
   const { data, isError, error, isLoading } = useQuery("posts", fetchPosts, {staleTime: 2000});
+  /**
+   * stale time / cache time
+   * stale time
+   *  데이터 만료됐다고 판단하기 전까지 허용하는 시간
+   *  리페칭할때 고려 사항
+   * 
+   * cache time
+   *  나중에 다시 필요할 수도 있는 데이터
+   *  해당 데이터는 콜드 스토리지로 이동 구성된 cache time이 지나면 캐시의 데이터가 만료 되어 유효시간이 기본값 5분입니다. 
+   */
   if (isLoading) return <h3>Loading...</h3>;
   /* isFetching / isLoading
   isFetching : 
