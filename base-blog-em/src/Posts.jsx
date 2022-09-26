@@ -24,7 +24,7 @@ export function Posts() {
     }
   },[currentPage, queryClient]);
 
-  const { data, isError, error, isLoading } =
+  const { data, isError, error, isLoading, isFetching } =
     useQuery(["posts", currentPage], () => fetchPosts(currentPage), { staleTime: 2000, keepPreviousData: true });
   /**
    * stale time / cache time
@@ -36,7 +36,8 @@ export function Posts() {
    *  나중에 다시 필요할 수도 있는 데이터
    *  해당 데이터는 콜드 스토리지로 이동 구성된 cache time이 지나면 캐시의 데이터가 만료 되어 유효시간이 기본값 5분입니다. 
    */
-  if (isLoading) return <h3>Loading...</h3>;
+  // if (isLoading) return <h3>Loading...</h3>;
+  if(isFetching) return <h3>Feching in ...</h3>; // -> 캐시가 데이터가 있어도, Fetching in profress가 매번 나타나게 됩니다.
   /* isFetching / isLoading
   isFetching : 
     비동키 쿼리가 해결되지 않았음을 의미한다.
