@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery, useMutation } from "react-query";
 
 async function fetchComments(postId) {
   const response = await fetch(
@@ -24,15 +24,19 @@ async function updatePost(postId) {
 }
 
 export function PostDetail({ post }) {
-  const { data, isLoading, isError, error } = useQuery(["comments", post.id], () => fetchComments(post.id)
+  const { data, isLoading, isError, error } = useQuery(
+    ["comments", post.id],
+    () => fetchComments(post.id)
   );
 
-  if(isLoading){
+  const deleteMutation = useMutation((postId) => deletePost(postId));
+
+  if (isLoading) {
     return <h3>Loading!</h3>
   }
 
-  if(isError){
-    return(
+  if (isError) {
+    return (
       <>
         <h3>Erros</h3>
         <p>{error.toString()}</p>
@@ -40,17 +44,26 @@ export function PostDetail({ post }) {
     )
   }
 
-return (
-  <>
-    <h3 style={{ color: "blue" }}>{post.title}</h3>
-    <button>Delete</button> <button>Update title</button>
-    <p>{post.body}</p>
-    <h4>Comments</h4>
-    {data.map((comment) => (
-      <li key={comment.id}>
-        {comment.email}: {comment.body}
-      </li>
-    ))}
-  </>
-);
+  return (
+    <>
+      <h3 style={{ color: "blue" }}>{post.title}</h3>
+      <button onClick={() => deleteMutation.mutate(post.id)}>Delete</button>
+        {deleteMutation.isError && 
+        (<p style={{color:"red"}}>Error deleting the post</p>)}
+        {deleteMutation.isLoading &&(
+          <p style={{color: "purple"}}>Deleting the post</p>
+        )}
+         {deleteMutation.isSuccess &&(
+          <p style={{color: "green"}}>Post has (not) been delete</p>
+        )}
+      <button>Update title</button>
+      <p>{post.body}</p>
+      <h4>Comments</h4>
+      {data.map((comment) => (
+        <li key={comment.id}>
+          {comment.email}: {comment.body}
+        </li>
+      ))}
+    </>
+  );
 }
